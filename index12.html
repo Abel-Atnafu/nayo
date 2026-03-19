@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💌</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #2a2a2a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: 'Quicksand', sans-serif;
+  }
+
+  .particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: rgba(255, 80, 80, 0.3);
+    border-radius: 50%;
+    animation: float 6s infinite ease-in-out;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+    50% { transform: translateY(-80px) scale(1.5); opacity: 0.7; }
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .tap-hint {
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    animation: pulse-text 2s infinite ease-in-out;
+    transition: opacity 0.5s;
+  }
+
+  @keyframes pulse-text {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+
+  /* HEART */
+  .heart-wrapper {
+    cursor: pointer;
+    position: relative;
+    width: 200px; height: 200px;
+    transition: transform 0.3s ease;
+  }
+  .heart-wrapper:hover { transform: scale(1.05); }
+
+  .heart {
+    width: 100%; height: 100%;
+    animation: heartbeat 1.4s infinite ease-in-out;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.08); }
+    60% { transform: scale(1); }
+  }
+
+  .heart-glow {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 180px; height: 180px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255,50,50,0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: glow 2s infinite ease-in-out;
+    pointer-events: none;
+  }
+
+  @keyframes glow {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  }
+
+  /* OVERLAY */
+  .overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: background 0.8s ease;
+  }
+  .overlay.active {
+    background: rgba(0,0,0,0.85);
+    pointer-events: all;
+  }
+
+  .question-card {
+    background: linear-gradient(145deg, #1e1e1e, #2d2d2d);
+    border: 1px solid rgba(255,80,80,0.2);
+    border-radius: 24px;
+    padding: 50px 40px;
+    text-align: center;
+    max-width: 380px;
+    width: 90%;
+    transform: scale(0) rotate(-10deg);
+    opacity: 0;
+    transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 0 60px rgba(255, 50, 50, 0.15), 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .overlay.active .question-card {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  .question-card .mini-heart {
+    font-size: 40px;
+    margin-bottom: 16px;
+    display: inline-block;
+    animation: heartbeat 1.4s infinite ease-in-out;
+  }
+
+  .question-card h2 {
+    font-family: 'Dancing Script', cursive;
+    color: #fff;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .question-card p {
+    color: rgba(255,255,255,0.55);
+    font-size: 14px;
+    margin-bottom: 36px;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .btn {
+    padding: 14px 36px;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-yes {
+    background: linear-gradient(135deg, #e53e3e, #ff6b6b);
+    color: white;
+    box-shadow: 0 4px 20px rgba(229, 62, 62, 0.4);
+  }
+  .btn-yes:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 30px rgba(229, 62, 62, 0.6);
+  }
+
+  .btn-no {
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  /* CELEBRATION */
+  .celebration {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(0,0,0,0.92);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+  }
+  .celebration.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .celebration h1 {
+    font-family: 'Dancing Script', cursive;
+    color: #fff;
+    font-size: 52px;
+    font-weight: 700;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease 0.3s;
+  }
+  .celebration.active h1 {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .celebration .hearts-rain {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .falling-heart {
+    position: absolute;
+    top: -50px;
+    font-size: 24px;
+    animation: fall linear forwards;
+    opacity: 0.8;
+  }
+
+  @keyframes fall {
+    to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  .celebration .sub {
+    color: rgba(255,255,255,0.5);
+    font-size: 16px;
+    margin-top: 12px;
+    opacity: 0;
+    transition: opacity 0.8s ease 0.8s;
+  }
+  .celebration.active .sub { opacity: 1; }
+
+  /* NO RESPONSE */
+  .no-response {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background: rgba(0,0,0,0.92);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+  }
+  .no-response.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .no-response p {
+    font-family: 'Dancing Script', cursive;
+    color: rgba(255,255,255,0.7);
+    font-size: 28px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease 0.3s;
+  }
+  .no-response.active p {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Main heart -->
+<div class="container" id="main-container">
+  <div class="heart-wrapper" id="heart-btn">
+    <div class="heart-glow"></div>
+    <svg class="heart" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="hg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#ff6b6b"/>
+          <stop offset="100%" style="stop-color:#c0392b"/>
+        </linearGradient>
+        <filter id="shadow">
+          <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#e53e3e" flood-opacity="0.35"/>
+        </filter>
+      </defs>
+      <path d="M100 180 C60 140, 10 120, 10 80 C10 40, 50 20, 100 60 C150 20, 190 40, 190 80 C190 120, 140 140, 100 180Z"
+            fill="url(#hg)" filter="url(#shadow)"/>
+    </svg>
+  </div>
+  <span class="tap-hint">tap the heart</span>
+</div>
+
+<!-- Question overlay -->
+<div class="overlay" id="overlay">
+  <div class="question-card">
+    <div class="mini-heart">❤️</div>
+    <h2>Will you be my girlfriend?</h2>
+    <p>You already make me smile every day...</p>
+    <div class="buttons">
+      <button class="btn btn-yes" id="btn-yes">Yes 💕</button>
+      <button class="btn btn-no" id="btn-no">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- Celebration screen -->
+<div class="celebration" id="celebration">
+  <div class="hearts-rain" id="hearts-rain"></div>
+  <h1>You just made me the happiest ❤️</h1>
+  <span class="sub">I promise to make you smile every single day</span>
+</div>
+
+<!-- No screen -->
+<div class="no-response" id="no-response">
+  <p>That's okay... I'll still be here 🤍</p>
+</div>
+
+<script>
+  // Particles
+  const particlesEl = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 6 + 's';
+    p.style.animationDuration = (4 + Math.random() * 4) + 's';
+    p.style.width = p.style.height = (2 + Math.random() * 4) + 'px';
+    particlesEl.appendChild(p);
+  }
+
+  // Heart click
+  document.getElementById('heart-btn').addEventListener('click', () => {
+    document.getElementById('overlay').classList.add('active');
+    document.querySelector('.tap-hint').style.opacity = '0';
+  });
+
+  // YES
+  document.getElementById('btn-yes').addEventListener('click', () => {
+    document.getElementById('overlay').classList.remove('active');
+    const celeb = document.getElementById('celebration');
+    celeb.classList.add('active');
+
+    // Rain hearts
+    const rain = document.getElementById('hearts-rain');
+    const emojis = ['❤️', '💕', '💗', '💖', '💘', '🥰', '✨'];
+    for (let i = 0; i < 50; i++) {
+      const h = document.createElement('div');
+      h.className = 'falling-heart';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      h.style.left = Math.random() * 100 + '%';
+      h.style.animationDuration = (2 + Math.random() * 3) + 's';
+      h.style.animationDelay = Math.random() * 2 + 's';
+      h.style.fontSize = (16 + Math.random() * 24) + 'px';
+      rain.appendChild(h);
+    }
+  });
+
+  // NO - moves away
+  let noCount = 0;
+  const btnNo = document.getElementById('btn-no');
+  btnNo.addEventListener('mouseover', () => {
+    if (noCount < 3) {
+      const x = (Math.random() - 0.5) * 200;
+      const y = (Math.random() - 0.5) * 100;
+      btnNo.style.transform = `translate(${x}px, ${y}px)`;
+      noCount++;
+    }
+  });
+  btnNo.addEventListener('click', () => {
+    document.getElementById('overlay').classList.remove('active');
+    document.getElementById('no-response').classList.add('active');
+  });
+</script>
+</body>
+</html>
